@@ -6,6 +6,11 @@ public class ObligatoryMonobehavior : MonoBehaviour
 {
     void Start()
     {
-        
+        SessionManager.Initialize();
+    }
+
+    private void Update()
+    {
+        SessionManager.Update();
     }
 }
