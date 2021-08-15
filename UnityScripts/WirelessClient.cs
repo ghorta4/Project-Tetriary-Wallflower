@@ -7,11 +7,13 @@ using System.Net;
 
 public class WirelessClient : WirelessCommunicator
 {
+    public IPEndPoint serverEndpoint;
+
     //keep track of what kind of data type is read/the associated ID and don't use out of order packets
-    public Dictionary<packetType, int> sentDataRecords = new Dictionary<packetType, int> { };
+    public Dictionary<PacketType, int> sentDataRecords = new Dictionary<PacketType, int> { };
 
     //this value stores what the latest processed request ID was
-    public Dictionary<packetType, int> dataSequencingDictionary = new Dictionary<packetType, int> { };
+    public Dictionary<PacketType, int> dataSequencingDictionary = new Dictionary<PacketType, int> { };
 
     public override void Initialize()
     {
@@ -35,11 +37,21 @@ public class WirelessClient : WirelessCommunicator
     public void ProcessLatestPacket()
     {
         DataPacket dp = packets.Dequeue();
+        if (dp == null)
+        {
+            return;
+        }
         switch (dp.stowedPacketType)
         {
             default:
                 ErrorHandler.AddErrorToLog(new Exception("Unhandled packet type: " + dp.stowedPacketType));
                 break;
         }
+    }
+
+    public void sendMessageToServer(byte[] message, PacketType type)
+    {
+        byte[] assembledPacket = GenerateProperDataPacket(message, type, sentDataRecords);
+        SendPacketToGivenEndpoint(serverEndpoint, assembledPacket);
     }
 }

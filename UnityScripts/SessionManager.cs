@@ -10,6 +10,7 @@ public static class SessionManager
     public static void Initialize()
     {
         client = new WirelessClient();
+        client.serverEndpoint = new IPEndPoint(IPAddress.Loopback, 44500);
         client.Initialize();
         client.StartListeningThread();
     }
@@ -17,6 +18,6 @@ public static class SessionManager
     public static void Update()
     {
         client.Update();
-        client.SendPacketToGivenEndpoint(new IPEndPoint(IPAddress.Loopback, 44500), new byte[6]);
+        client.SendPacketToGivenEndpoint(new IPEndPoint(IPAddress.Loopback, 44500), new byte[24]);
     }
 }
